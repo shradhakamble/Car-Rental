@@ -1,2 +1,2 @@
-# car-rental
+# Car Rental
 Car Rental application
