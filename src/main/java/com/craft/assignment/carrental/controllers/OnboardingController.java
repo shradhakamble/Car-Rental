@@ -4,6 +4,7 @@ import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
 import com.craft.assignment.carrental.services.DriverOnboardingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class OnboardingController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerDriver(@RequestBody DriverProfile driverProfile) {
+    public ResponseEntity<String> registerDriver(@RequestBody DriverProfile driverProfile) throws JsonProcessingException {
         driverOnboardingService.registerDriver(driverProfile);
         return new ResponseEntity<>("Driver registered successfully", HttpStatus.OK);
     }

@@ -1,6 +1,7 @@
 package com.craft.assignment.carrental.services;
 
 import com.craft.assignment.carrental.config.JwtConfig;
+import com.craft.assignment.carrental.models.DriverInfoset;
 import com.craft.assignment.carrental.models.DriverProfile;
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.utils.HashUtils;
@@ -33,7 +34,7 @@ public class AuthService {
     }
 
     public String authenticateDriver(String email, String password) {
-        Optional<DriverProfile> driverProfile = driverRepository.getDriverByEmail(email);
+        Optional<DriverInfoset> driverProfile = driverRepository.getDriverByEmail(email);
 
         if (driverProfile.isPresent() && HashUtils.verifyPassword(password, driverProfile.get().getPassword())) {
             // Generate JWT token
