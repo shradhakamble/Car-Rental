@@ -4,7 +4,7 @@ import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.models.Address;
 import com.craft.assignment.carrental.models.DriverAvailability;
 import com.craft.assignment.carrental.models.DriverIdentification;
-import com.craft.assignment.carrental.models.DriverProfile;
+import com.craft.assignment.carrental.models.DriverRegistrationRequest;
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.utils.HashUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,10 +22,10 @@ public class DriverOnboardingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public void registerDriver(DriverProfile driverProfile) throws JsonProcessingException {
-        driverProfile.setPassword(HashUtils.hashPassword(driverProfile.getPassword()));
-        driverRepository.saveDriverInfoset(objectMapper.writeValueAsString(driverProfile.getAddress()), driverProfile.getContactNumber(),
-            driverProfile.getDob(), driverProfile.getEmail(), driverProfile.getName(), driverProfile.getPassword(), driverProfile.getStatus());
+    public Long registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
+        driverRegistrationRequest.setPassword(HashUtils.hashPassword(driverRegistrationRequest.getPassword()));
+        return driverRepository.saveDriverInfoset(objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()), driverRegistrationRequest.getContactNumber(),
+            driverRegistrationRequest.getDob(), driverRegistrationRequest.getEmail(), driverRegistrationRequest.getName(), driverRegistrationRequest.getPassword(), driverRegistrationRequest.getStatus());
     }
 
     public void uploadDocument(MultipartFile documentFile, DocumentType documentType) {

@@ -5,7 +5,6 @@ import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
 import com.craft.assignment.carrental.services.DriverOnboardingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +24,9 @@ public class OnboardingController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerDriver(@RequestBody DriverProfile driverProfile) throws JsonProcessingException {
-        driverOnboardingService.registerDriver(driverProfile);
-        return new ResponseEntity<>("Driver registered successfully", HttpStatus.OK);
+    public ResponseEntity<String> registerDriver(@RequestBody DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
+        Long response = driverOnboardingService.registerDriver(driverRegistrationRequest);
+        return new ResponseEntity<>("Driver registered successfully with id: " + response, HttpStatus.OK);
     }
 
     @PostMapping("/login")
