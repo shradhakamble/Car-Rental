@@ -22,6 +22,9 @@ public class DriverOnboardingJourney {
     private BigDecimal driverId;
     private String currentStep;
     private BigDecimal currentStepStatus;
+    private String documentName;
+    @Lob
+    private byte[] document;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
 }
