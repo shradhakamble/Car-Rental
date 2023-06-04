@@ -15,20 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "driver_infoset")
-public class DriverProfile {
+@Table(name = "driver_vehicle_infoset")
+public class VehicleDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigDecimal id;
-    private String name;
-    @Column(name = "contact_number")
-    private String contactNumber;
-    private String dob;
-    private String email;
-    private String password;
-    private AccountStatus status;
+    private String vehicleNumber;
+    private BigDecimal driverId;
+    private String registeredName;
+    private String model;
     @Column(name = "created_at")
-    private LocalDateTime creationTimestamp;
-    @Column(columnDefinition = "jsonb")
-    private Address address;
+    private LocalDateTime registrationTimestamp;
 }

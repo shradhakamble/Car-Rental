@@ -1,6 +1,5 @@
 package com.craft.assignment.carrental.models;
 
-import com.craft.assignment.carrental.enums.AccountStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,20 +14,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "driver_infoset")
-public class DriverProfile {
+@Table(name = "driver_onboarding_journey_step_status_history")
+public class DriverOnboardingJourneyStatusHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigDecimal id;
-    private String name;
-    @Column(name = "contact_number")
-    private String contactNumber;
-    private String dob;
-    private String email;
-    private String password;
-    private AccountStatus status;
+    private BigDecimal driverId;
+    private String step;
+    private BigDecimal stepStatus;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
-    @Column(columnDefinition = "jsonb")
-    private Address address;
 }
