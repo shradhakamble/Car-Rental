@@ -12,16 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+
 @Service
 public class DriverOnboardingService {
 
     @Autowired
     private DriverRepository driverRepository;
 
-
-
     public void registerDriver(DriverProfile driverProfile) {
         driverProfile.setPassword(HashUtils.hashPassword(driverProfile.getPassword()));
+        driverProfile.setCreationTimestamp(LocalDateTime.now());
         driverRepository.save(driverProfile);
     }
 

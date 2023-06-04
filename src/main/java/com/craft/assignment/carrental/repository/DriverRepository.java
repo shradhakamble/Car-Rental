@@ -16,13 +16,13 @@ import java.util.Optional;
 public interface DriverRepository extends JpaRepository<DriverProfile, Long> {
 
     // Insert Query
-    @Modifying
-    @Query("INSERT INTO DriverProfile (name, contactNumber, vehicleMake, vehicleModel) " +
-        "VALUES (:name, :contactNumber, :vehicleMake, :vehicleModel)")
-    void insertDriver(@Param("name") String name,
-                      @Param("contactNumber") String contactNumber,
-                      @Param("vehicleMake") String vehicleMake,
-                      @Param("vehicleModel") String vehicleModel);
+//    @Modifying
+//    @Query("INSERT INTO DriverProfile (name, contactNumber, vehicleMake, vehicleModel) " +
+//        "VALUES (:name, :contactNumber, :vehicleMake, :vehicleModel)")
+//    void insertDriver(@Param("name") String name,
+//                      @Param("contactNumber") String contactNumber,
+//                      @Param("vehicleMake") String vehicleMake,
+//                      @Param("vehicleModel") String vehicleModel);
 
     // Get Query
     @Query("SELECT d FROM DriverProfile d WHERE d.id = :id")
