@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
 @Repository
@@ -33,15 +35,16 @@ public interface DriverRepository extends JpaRepository<DriverInfoset, Long> {
 
     @Modifying
     @Query(value = "INSERT INTO driver_infoset (address, contact_number, dob, email, name, password, status) " +
-        "VALUES (CAST(:address AS JSONB), :contactNumber, :dob, :email, :name, :password, :status)",
+        "VALUES (CAST(:address AS JSONB), :contactNumber, :dob, :email, :name, :password, :status) " +
+        "RETURNING id",
         nativeQuery = true)
-    Long saveDriverInfoset(@Param("address") String address,
-                           @Param("contactNumber") String contactNumber,
-                           @Param("dob") String dob,
-                           @Param("email") String email,
-                           @Param("name") String name,
-                           @Param("password") String password,
-                           @Param("status") String status);
+    void saveDriverInfoset(@Param("address") String address,
+                                 @Param("contactNumber") String contactNumber,
+                                 @Param("dob") String dob,
+                                 @Param("email") String email,
+                                 @Param("name") String name,
+                                 @Param("password") String password,
+                                 @Param("status") String status);
 
 
 

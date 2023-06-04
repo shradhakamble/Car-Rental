@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 @RequestMapping("/api/driver")
 @RestController
 public class OnboardingController {
@@ -25,8 +28,8 @@ public class OnboardingController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerDriver(@RequestBody DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
-        Long response = driverOnboardingService.registerDriver(driverRegistrationRequest);
-        return new ResponseEntity<>("Driver registered successfully with id: " + response, HttpStatus.OK);
+        driverOnboardingService.registerDriver(driverRegistrationRequest);
+        return new ResponseEntity<>("Driver registered successfully", HttpStatus.OK);
     }
 
     @PostMapping("/login")

@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 @Service
 public class DriverOnboardingService {
@@ -22,9 +25,9 @@ public class DriverOnboardingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public Long registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
+    public void registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
         driverRegistrationRequest.setPassword(HashUtils.hashPassword(driverRegistrationRequest.getPassword()));
-        return driverRepository.saveDriverInfoset(objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()), driverRegistrationRequest.getContactNumber(),
+         driverRepository.saveDriverInfoset(objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()), driverRegistrationRequest.getContactNumber(),
             driverRegistrationRequest.getDob(), driverRegistrationRequest.getEmail(), driverRegistrationRequest.getName(), driverRegistrationRequest.getPassword(), driverRegistrationRequest.getStatus());
     }
 
