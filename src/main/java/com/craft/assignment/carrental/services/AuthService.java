@@ -3,10 +3,9 @@ package com.craft.assignment.carrental.services;
 import com.craft.assignment.carrental.config.JwtConfig;
 import com.craft.assignment.carrental.models.DriverProfile;
 import com.craft.assignment.carrental.repository.DriverRepository;
+import com.craft.assignment.carrental.utils.HashUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final DriverRepository driverRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final SecretKey jwtSecretKey;
     private final long jwtExpirationTime;
@@ -35,7 +35,7 @@ public class AuthService {
     public String authenticateDriver(String email, String password) {
         Optional<DriverProfile> driverProfile = driverRepository.getDriverByEmail(email);
 
-        if (driverProfile.isPresent() && passwordEncoder.matches(password, driverProfile.get().getContactNumber())) {
+        if (driverProfile.isPresent() && HashUtils.verifyPassword(password, driverProfile.get().getPassword())) {
             // Generate JWT token
             Instant now = Instant.now();
             Date expirationDate = Date.from(now.plusMillis(jwtExpirationTime));
@@ -49,18 +49,6 @@ public class AuthService {
 
         return null;
     }
-
-    public String hashPassword(String password) {
-        // Generate a salt
-        String salt = BCrypt.gensalt();
-        // Hash the password with the salt
-        return BCrypt.hashpw(password, salt);
-    }
-
-    public boolean verifyPassword(String password, String hashedPassword) {
-        return BCrypt.checkpw(password, hashedPassword);
-    }
-
 
 }
 

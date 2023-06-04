@@ -1,5 +1,6 @@
 package com.craft.assignment.carrental.controllers;
 
+import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
 import com.craft.assignment.carrental.services.DriverOnboardingService;
@@ -40,16 +41,16 @@ public class OnboardingController {
     }
 
 
-    @PostMapping("/documents/upload")
+    @PostMapping("registered/documents/upload")
     public ResponseEntity<String> uploadDocuments(@RequestParam("file") MultipartFile documentFile,
-                                                  @RequestParam("type") String documentType) {
+                                                  @RequestParam("type") DocumentType documentType) {
         // Logic to save the uploaded document to the database or file storage
         // ...
 
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/background-verification")
+    @PostMapping("registered/background-verification")
     public ResponseEntity<String> initiateBackgroundVerification(@RequestBody DriverIdentification driverIdentification) {
         // Logic to initiate background verification process
         // ...
@@ -57,7 +58,7 @@ public class OnboardingController {
         return new ResponseEntity<>("Background verification initiated", HttpStatus.OK);
     }
 
-    @PostMapping("/tracking-device/shipping")
+    @PostMapping("registered/tracking-device/shipping")
     public ResponseEntity<String> shipTrackingDevice(@RequestBody Address address) {
         // Logic to trigger the shipping process for a tracking device
         // ...
@@ -65,7 +66,7 @@ public class OnboardingController {
         return new ResponseEntity<>("Tracking device shipping process initiated", HttpStatus.OK);
     }
 
-    @PostMapping("/ride/ready")
+    @PostMapping("registered/ride/ready")
     public ResponseEntity<String> markReadyForRide(@RequestBody DriverAvailability driverAvailability) {
         // Logic to update driver's availability status
         // ...

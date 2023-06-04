@@ -22,6 +22,7 @@ public class DriverProfile {
     private String name;
     private String contactNumber;
     private String email;
+    private String password;
     private AccountStatus accountStatus;
     private String vehicleMake;
     private String vehicleModel;

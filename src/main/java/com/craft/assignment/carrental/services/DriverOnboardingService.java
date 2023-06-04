@@ -1,11 +1,13 @@
 package com.craft.assignment.carrental.services;
 
+import com.craft.assignment.carrental.enums.AccountStatus;
 import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.models.Address;
 import com.craft.assignment.carrental.models.DriverAvailability;
 import com.craft.assignment.carrental.models.DriverIdentification;
 import com.craft.assignment.carrental.models.DriverProfile;
 import com.craft.assignment.carrental.repository.DriverRepository;
+import com.craft.assignment.carrental.utils.HashUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +18,10 @@ public class DriverOnboardingService {
     @Autowired
     private DriverRepository driverRepository;
 
+
+
     public void registerDriver(DriverProfile driverProfile) {
+        driverProfile.setPassword(HashUtils.hashPassword(driverProfile.getPassword()));
         driverRepository.save(driverProfile);
     }
 
