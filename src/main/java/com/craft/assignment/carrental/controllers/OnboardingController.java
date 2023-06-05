@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -45,11 +46,12 @@ public class OnboardingController {
 
 
     @PostMapping("registered/documents/upload")
-    public ResponseEntity<String> uploadDocuments(@RequestParam("file") MultipartFile documentFile,
-                                                  @RequestParam("type") DocumentType documentType) {
-        // Logic to save the uploaded document to the database or file storage
-        // ...
+    public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId,
+                                                  @RequestParam("type") DocumentType type,
+                                                  @RequestParam("file") MultipartFile file
+                                                 ) throws IOException {
 
+        driverOnboardingService.uploadDocument(driverId, file, type);
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
