@@ -27,8 +27,15 @@ public class DriverOnboardingService {
 
     public void registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
         driverRegistrationRequest.setPassword(HashUtils.hashPassword(driverRegistrationRequest.getPassword()));
-         driverRepository.saveDriverInfoset(objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()), driverRegistrationRequest.getContactNumber(),
-            driverRegistrationRequest.getDob(), driverRegistrationRequest.getEmail(), driverRegistrationRequest.getName(), driverRegistrationRequest.getPassword(), driverRegistrationRequest.getStatus());
+        driverRepository.saveDriverInfoset(
+            objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()),
+            driverRegistrationRequest.getContactNumber(),
+            driverRegistrationRequest.getDob(),
+            driverRegistrationRequest.getEmail(),
+            driverRegistrationRequest.getName(),
+            driverRegistrationRequest.getPassword(),
+            driverRegistrationRequest.getStatus()
+        );
     }
 
     public void uploadDocument(MultipartFile documentFile, DocumentType documentType) {
