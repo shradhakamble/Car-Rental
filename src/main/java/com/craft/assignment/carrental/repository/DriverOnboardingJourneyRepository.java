@@ -34,4 +34,10 @@ public interface DriverOnboardingJourneyRepository extends JpaRepository<DriverO
         nativeQuery = true)
     Optional<DriverOnboardingJourney> getJourneyDetailsByDriverId(@Param("driverId") Long driverId);
 
+
+    @Modifying
+    @Query("UPDATE DriverOnboardingJourney d SET d.currentStep = :currentStep, d.currentStepStatus = :currentStepStatus WHERE d.driverId = :driverId")
+    void updateJourneyDetailsByDriverId(@Param("driverId") Long driverId, @Param("currentStep") String currentStep, @Param("currentStepStatus") String currentStepStatus);
+
+
 }

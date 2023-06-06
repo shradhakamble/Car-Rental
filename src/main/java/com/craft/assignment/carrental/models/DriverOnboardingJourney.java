@@ -29,6 +29,7 @@ public class DriverOnboardingJourney {
     private String documentName;
     @Lob
     @Column(name = "document", columnDefinition = "bytea")
+    @Transient
     private Blob document;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;

@@ -71,9 +71,20 @@ public class DriverOnboardingService {
         try {
             validateDocument(currentStep, documentFile);
         } catch (Exception ex) {
-            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name(),null);
+            if(currentStep == OnboardingJourneyStep.POI) {
+                // TODO: document will go in history
+                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name(), null);
+            }
+            else {
+                driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
+            }
         }
-        driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(),documentType.name(), documentFile.getBytes());
+        if(currentStep == OnboardingJourneyStep.POI) {
+            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentType.name(), documentFile.getBytes());
+        }
+        else {
+            driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
+        }
     }
 
     private void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
