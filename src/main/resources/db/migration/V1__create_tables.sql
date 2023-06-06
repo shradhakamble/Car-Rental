@@ -28,7 +28,6 @@ CREATE TABLE driver_onboarding_journey (
     current_step VARCHAR(255) NOT NULL,
     current_step_status varchar NOT NULL,
     document_name VARCHAR(20) NOT NULL,
-    document BYTEA,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
@@ -40,6 +39,7 @@ CREATE TABLE driver_onboarding_journey_step_status_history (
     driver_id bigserial NOT NULL,
     step varchar NOT NULL,
     step_status varchar NOT NULL,
+    document BYTEA,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );

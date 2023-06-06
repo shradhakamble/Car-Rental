@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,10 +19,16 @@ import java.time.LocalDateTime;
 public class DriverOnboardingJourneyStatusHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigDecimal id;
-    private BigDecimal driverId;
+    @Column(columnDefinition = "bigserial")
+    private Long id;
+    @Column(columnDefinition = "bigserial")
+    private Long driverId;
     private String step;
-    private BigDecimal stepStatus;
+    private String stepStatus;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
+    @Lob
+    @Column(name = "document", columnDefinition = "bytea")
+    @Transient
+    private Blob document;
 }

@@ -27,10 +27,6 @@ public class DriverOnboardingJourney {
     private String currentStep;
     private String currentStepStatus;
     private String documentName;
-    @Lob
-    @Column(name = "document", columnDefinition = "bytea")
-    @Transient
-    private Blob document;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
 }

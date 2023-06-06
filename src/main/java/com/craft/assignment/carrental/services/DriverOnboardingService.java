@@ -4,6 +4,7 @@ import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
+import com.craft.assignment.carrental.repository.DriverOnboardingJourneyHistoryRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.services.external.PartnerDocumentVerificationService;
@@ -30,6 +31,9 @@ public class DriverOnboardingService {
 
     @Autowired
     private DriverOnboardingJourneyRepository driverOnboardingJourneyRepository;
+
+    @Autowired
+    private DriverOnboardingJourneyHistoryRepository driverOnboardingJourneyHistoryRepository;
 
     @Autowired
     private PartnerDocumentVerificationService partnerDocumentVerificationService;
@@ -72,19 +76,21 @@ public class DriverOnboardingService {
             validateDocument(currentStep, documentFile);
         } catch (Exception ex) {
             if(currentStep == OnboardingJourneyStep.POI) {
-                // TODO: document will go in history
-                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name(), null);
+                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name());
             }
             else {
                 driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
             }
+            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
+            throw new Exception("Error occurred while verification at step: " + currentStep);
         }
         if(currentStep == OnboardingJourneyStep.POI) {
-            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentType.name(), documentFile.getBytes());
+            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentType.name());
         }
         else {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
         }
+        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
     }
 
     private void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
