@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
@@ -21,7 +22,8 @@ import java.time.LocalDateTime;
 public class DriverInfoset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigDecimal id;
+    @Column(columnDefinition = "bigserial")
+    private Long id;
     private String name;
     @Column(name = "contact_number")
     private String contactNumber;

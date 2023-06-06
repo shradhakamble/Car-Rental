@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 @Transactional
 public interface DriverOnboardingJourneyRepository extends JpaRepository<DriverOnboardingJourney, Long>  {
@@ -22,4 +24,14 @@ public interface DriverOnboardingJourneyRepository extends JpaRepository<DriverO
                                      @Param("currentStepStatus") String currentStepStatus,
                                      @Param("documentName") String documentName,
                                      @Param("document") byte[] document);
+
+//    @Query("SELECT d FROM DriverOnboardingJourney d WHERE d.driverId = :driverId")
+//    Optional<DriverOnboardingJourney> getJourneyDetailsByDriverId(@Param("driverId") Long driverId);
+
+    @Query(value = "SELECT id, driver_id, current_step, current_step_status, document_name, document, created_at " +
+        "FROM driver_onboarding_journey " +
+        "WHERE driver_id = :driverId",
+        nativeQuery = true)
+    Optional<DriverOnboardingJourney> getJourneyDetailsByDriverId(@Param("driverId") Long driverId);
+
 }

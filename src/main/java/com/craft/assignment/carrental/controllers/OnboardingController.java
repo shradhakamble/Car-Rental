@@ -1,6 +1,8 @@
 package com.craft.assignment.carrental.controllers;
 
 import com.craft.assignment.carrental.enums.DocumentType;
+import com.craft.assignment.carrental.enums.JourneyStatus;
+import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
 import com.craft.assignment.carrental.services.DriverOnboardingService;
@@ -10,15 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 @RequestMapping("/api/driver")
 @RestController
 public class OnboardingController {
 
-    private DriverOnboardingService driverOnboardingService;
+    private final DriverOnboardingService driverOnboardingService;
 
     private final AuthService authService;
 
@@ -45,25 +43,29 @@ public class OnboardingController {
     }
 
 
-    @PostMapping("registered/documents/upload")
+    @PostMapping("/registered/documents/upload")
     public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId,
                                                   @RequestParam("type") DocumentType type,
-                                                  @RequestParam("file") MultipartFile file
-                                                 ) throws IOException {
+                                                  @RequestParam(value = "currentStep", required = false) OnboardingJourneyStep currentStep,
+                                                  @RequestParam(value = "file", required = false) MultipartFile file
+                                                 ) throws Exception {
 
-        driverOnboardingService.uploadDocument(driverId, file, type);
+        driverOnboardingService.uploadDocument(driverId, currentStep, file, type);
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
-    @PostMapping("registered/background-verification")
+    @PostMapping("/registered/background-verification")
     public ResponseEntity<String> initiateBackgroundVerification(@RequestBody DriverIdentification driverIdentification) {
-        // Logic to initiate background verification process
-        // ...
-
         return new ResponseEntity<>("Background verification initiated", HttpStatus.OK);
     }
 
-    @PostMapping("registered/tracking-device/shipping")
+    @GetMapping("/registered/onboarding/current-step")
+    public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) {
+        OnboardingJourneyStep status = driverOnboardingService.getCurrentOnboardingStepForAUser(driverId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    @PostMapping("/registered/tracking-device/shipping")
     public ResponseEntity<String> shipTrackingDevice(@RequestBody Address address) {
         // Logic to trigger the shipping process for a tracking device
         // ...
@@ -71,7 +73,7 @@ public class OnboardingController {
         return new ResponseEntity<>("Tracking device shipping process initiated", HttpStatus.OK);
     }
 
-    @PostMapping("registered/ride/ready")
+    @PostMapping("/registered/ride/ready")
     public ResponseEntity<String> markReadyForRide(@RequestBody DriverAvailability driverAvailability) {
         // Logic to update driver's availability status
         // ...

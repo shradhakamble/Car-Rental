@@ -1,12 +1,12 @@
 package com.craft.assignment.carrental.services;
 
 import com.craft.assignment.carrental.enums.DocumentType;
-import com.craft.assignment.carrental.models.Address;
-import com.craft.assignment.carrental.models.DriverAvailability;
-import com.craft.assignment.carrental.models.DriverIdentification;
-import com.craft.assignment.carrental.models.DriverRegistrationRequest;
+import com.craft.assignment.carrental.enums.JourneyStatus;
+import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
+import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
 import com.craft.assignment.carrental.repository.DriverRepository;
+import com.craft.assignment.carrental.services.external.PartnerDocumentVerificationService;
 import com.craft.assignment.carrental.utils.HashUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.JobHoldUntil;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -27,6 +30,10 @@ public class DriverOnboardingService {
 
     @Autowired
     private DriverOnboardingJourneyRepository driverOnboardingJourneyRepository;
+
+    @Autowired
+    private PartnerDocumentVerificationService partnerDocumentVerificationService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -44,15 +51,36 @@ public class DriverOnboardingService {
         );
     }
 
-    public void uploadDocument(Long driverId, MultipartFile documentFile, DocumentType documentType) throws IOException {
-        String currentStep = "";
-        if(documentType == DocumentType.POI) {
-            currentStep = DocumentType.POI.name();
+    // TODO: this can be made async by pushing to SQS
+    /*
+        Steps:
+        1. Mark current step status as INITIATED & push the journeyId, step & userId to queue
+        2. Upload file to s3 & get pre signed url
+        3. Pre process the document to verify if details are correct
+        4. Mark step as success & store url in DB
+     */
+    /*
+        In current approach: (Sync upload)
+        1. Validate the document and save
+
+     */
+
+    public void uploadDocument(Long driverId, OnboardingJourneyStep step, MultipartFile documentFile, DocumentType documentType) throws Exception {
+        OnboardingJourneyStep currentStep = step == null ? OnboardingJourneyStep.POI : step;
+        // document validated for current step
+        try {
+            validateDocument(currentStep, documentFile);
+        } catch (Exception ex) {
+            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name(),null);
         }
-        else if(documentType == DocumentType.POA) {
-            currentStep = DocumentType.POA.name();
+        driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(),documentType.name(), documentFile.getBytes());
+    }
+
+    private void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
+        boolean response = partnerDocumentVerificationService.validateDocument(step, documentFile);
+        if (!response) {
+            throw new Exception("Document verification failed for step: " + step.name());
         }
-        driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep, "INITIATED", currentStep, documentFile.getBytes());
     }
 
     public void initiateBackgroundVerification(DriverIdentification driverIdentification) {
@@ -68,5 +96,39 @@ public class DriverOnboardingService {
     public void markReadyForRide(DriverAvailability driverAvailability) {
         // Logic to update driver's availability status
         // ...
+    }
+
+    public OnboardingJourneyStep getCurrentOnboardingStepForAUser(Long driverId) {
+
+        /*
+          Step Orders:
+          1. POI
+          2. DRIVING_LICENSE
+          3. VEHICLE_VERIFICATION
+          4. PHOTO
+         */
+        Optional<DriverOnboardingJourney> journey = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId);
+        if (journey.isEmpty() || journey.get().getCurrentStep() == null) {
+            return OnboardingJourneyStep.POI;
+        }
+        else {
+            String journeyStatus = journey.get().getCurrentStep();
+            if (!Objects.equals(journey.get().getCurrentStepStatus(), JourneyStatus.SUCCESS.name())) {
+                return OnboardingJourneyStep.valueOf(journeyStatus);
+            }
+            if (journey.get().getCurrentStepStatus().equals(JourneyStatus.SUCCESS.name())) {
+                if (Objects.equals(journeyStatus, OnboardingJourneyStep.POI.name())) {
+                    return OnboardingJourneyStep.DRIVING_LICENSE;
+                } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.DRIVING_LICENSE.name())) {
+                    return OnboardingJourneyStep.VEHICLE_VERIFICATION;
+                } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
+                    return null;
+                }
+            }
+            else  {
+                return OnboardingJourneyStep.valueOf(journeyStatus);
+            }
+        }
+        return null;
     }
 }
