@@ -24,7 +24,8 @@ public class DeviceShippingInfoset {
     @Column(columnDefinition = "bigserial")
     private Long driverId;
     private String status;
-    private String current_location;
+    @Column(name = "current_location")
+    private String currentLocation;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
 }

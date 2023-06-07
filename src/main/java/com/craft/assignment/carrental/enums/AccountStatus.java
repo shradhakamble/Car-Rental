@@ -1,5 +1,5 @@
 package com.craft.assignment.carrental.enums;
 
 public enum AccountStatus {
-    ACTIVE, INACTIVE, FRAUD
+    ACTIVE, INACTIVE, FRAUD, IN_PROGRESS
 }

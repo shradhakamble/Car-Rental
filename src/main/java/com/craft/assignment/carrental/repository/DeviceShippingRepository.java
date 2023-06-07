@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface DeviceShippingRepository extends JpaRepository<DeviceShippingInfoset, Long> {
 
 
-    @Query("SELECT d FROM DeviceShippingInfoset d WHERE d.driver_id = :driverId")
+    @Query("SELECT d FROM DeviceShippingInfoset d WHERE d.driverId = :driverId")
     Optional<DeviceShippingInfoset> getShippingDetailsForADriver(@Param("driverId") Long driverId);
 
     @Modifying

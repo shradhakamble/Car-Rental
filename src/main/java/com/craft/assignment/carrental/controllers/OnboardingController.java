@@ -1,7 +1,6 @@
 package com.craft.assignment.carrental.controllers;
 
 import com.craft.assignment.carrental.enums.DocumentType;
-import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
@@ -58,6 +57,13 @@ public class OnboardingController {
     public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) {
         OnboardingJourneyStep status = driverOnboardingService.getCurrentOnboardingStepForAUser(driverId);
         return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    @PostMapping("/registered/mark-driver-active")
+    public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId
+    ) {
+        driverOnboardingService.markReadyForRide(driverId);
+        return new ResponseEntity<>("Driver marked as active", HttpStatus.OK);
     }
 
 }

@@ -23,19 +23,21 @@ public interface DriverRepository extends JpaRepository<DriverInfoset, Long> {
     Optional<DriverInfoset> getDriverByEmail(@Param("email") String email);
 
     @Modifying
-    @Query(value = "INSERT INTO driver_infoset (address, contact_number, dob, email, name, password) " +
-        "VALUES (CAST(:address AS jsonb), :contactNumber, :dob, :email, :name, :password)",
+    @Query(value = "INSERT INTO driver_infoset (address, contact_number, dob, email, name, password, status) " +
+        "VALUES (CAST(:address AS jsonb), :contactNumber, :dob, :email, :name, :password, :status)",
         nativeQuery = true)
     void saveDriverInfoset(@Param("address") String address,
                                  @Param("contactNumber") String contactNumber,
                                  @Param("dob") String dob,
                                  @Param("email") String email,
                                  @Param("name") String name,
-                                 @Param("password") String password);
+                                 @Param("password") String password,
+                                 @Param("status") String status
+                           );
 
 
     @Modifying
     @Query("UPDATE DriverInfoset d SET d.status = :status WHERE d.id = :driverId")
-    void markDriverAsActive(@Param("driverId") Long driverId);
+    void markDriverAsActive(@Param("driverId") Long driverId, @Param("status") String status);
 
 }

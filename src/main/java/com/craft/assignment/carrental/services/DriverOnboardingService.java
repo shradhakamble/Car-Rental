@@ -1,5 +1,6 @@
 package com.craft.assignment.carrental.services;
 
+import com.craft.assignment.carrental.enums.AccountStatus;
 import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
@@ -55,7 +56,8 @@ public class DriverOnboardingService {
             driverRegistrationRequest.getDob(),
             driverRegistrationRequest.getEmail(),
             driverRegistrationRequest.getName(),
-            driverRegistrationRequest.getPassword()
+            driverRegistrationRequest.getPassword(),
+            driverRegistrationRequest.getStatus()
         );
     }
 
@@ -123,7 +125,7 @@ public class DriverOnboardingService {
         DeviceShippingInfoset shippingInfoset = deviceShippingRepository.getShippingDetailsForADriver(driverId).get();
         if(Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
             // mark driver as ready
-            driverRepository.markDriverAsActive(driverId);
+            driverRepository.markDriverAsActive(driverId, AccountStatus.ACTIVE.name());
         }
     }
 
@@ -150,7 +152,10 @@ public class DriverOnboardingService {
                     return OnboardingJourneyStep.DRIVING_LICENSE;
                 } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.DRIVING_LICENSE.name())) {
                     return OnboardingJourneyStep.VEHICLE_VERIFICATION;
-                } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
+                }  else if (Objects.equals(journeyStatus, OnboardingJourneyStep.VEHICLE_VERIFICATION.name())) {
+                    return OnboardingJourneyStep.PHOTO;
+                }
+                else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
                     return null;
                 }
             }
