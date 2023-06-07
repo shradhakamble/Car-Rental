@@ -1,4 +1,4 @@
-package com.craft.assignment.carrental.models;
+package com.craft.assignment.carrental.models.repository;
 
 import com.craft.assignment.carrental.enums.AccountStatus;
 import jakarta.persistence.*;

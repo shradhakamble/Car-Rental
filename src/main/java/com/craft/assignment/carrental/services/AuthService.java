@@ -1,13 +1,12 @@
 package com.craft.assignment.carrental.services;
 
 import com.craft.assignment.carrental.config.JwtConfig;
-import com.craft.assignment.carrental.models.DriverInfoset;
+import com.craft.assignment.carrental.models.repository.DriverInfoset;
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.utils.HashUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -20,14 +19,12 @@ public class AuthService {
 
     private final DriverRepository driverRepository;
 
-    private final PasswordEncoder passwordEncoder;
     private final SecretKey jwtSecretKey;
     private final long jwtExpirationTime;
 
     @Autowired
-    public AuthService(DriverRepository driverRepository, PasswordEncoder passwordEncoder, SecretKey jwtSecretKey, JwtConfig jwtConfig) {
+    public AuthService(DriverRepository driverRepository, SecretKey jwtSecretKey, JwtConfig jwtConfig) {
         this.driverRepository = driverRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtSecretKey = jwtSecretKey;
         this.jwtExpirationTime = jwtConfig.getExpirationTime();
     }

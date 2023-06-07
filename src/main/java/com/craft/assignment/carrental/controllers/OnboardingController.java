@@ -1,6 +1,5 @@
 package com.craft.assignment.carrental.controllers;
 
-import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
@@ -44,12 +43,11 @@ public class OnboardingController {
 
     @PostMapping("/registered/documents/upload")
     public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId,
-                                                  @RequestParam("type") DocumentType type,
                                                   @RequestParam(value = "currentStep", required = false) OnboardingJourneyStep currentStep,
                                                   @RequestParam(value = "file", required = false) MultipartFile file
                                                  ) throws Exception {
 
-        driverOnboardingService.uploadDocument(driverId, currentStep, file, type);
+        driverOnboardingService.uploadDocument(driverId, currentStep, file);
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
@@ -60,7 +58,7 @@ public class OnboardingController {
     }
 
     @PostMapping("/registered/mark-driver-active")
-    public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId
+    public ResponseEntity<String> markDriverActive(@RequestParam("driverId") Long driverId
     ) {
         driverOnboardingService.markReadyForRide(driverId);
         return new ResponseEntity<>("Driver marked as active", HttpStatus.OK);

@@ -1,6 +1,6 @@
 package com.craft.assignment.carrental.repository;
 
-import com.craft.assignment.carrental.models.DriverInfoset;
+import com.craft.assignment.carrental.models.repository.DriverInfoset;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +14,6 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface DriverRepository extends JpaRepository<DriverInfoset, Long> {
-
-    // Get Query
-    @Query("SELECT d FROM DriverInfoset d WHERE d.id = :id")
-    Optional<DriverInfoset> getDriverById(@Param("id") Long id);
 
     @Query("SELECT d FROM DriverInfoset d WHERE d.email = :email")
     Optional<DriverInfoset> getDriverByEmail(@Param("email") String email);

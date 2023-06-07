@@ -1,4 +1,4 @@
-package com.craft.assignment.carrental.models;
+package com.craft.assignment.carrental.models.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -7,25 +7,32 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+
 
 @Data
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "device_shipping_infoset")
+@Table(name = "driver_infoset")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeviceShippingInfoset {
+public class DriverInfoset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigserial")
     private Long id;
-    @Column(columnDefinition = "bigserial")
-    private Long driverId;
+    private String name;
+    @Column(name = "contact_number")
+    private String contactNumber;
+    private String dob;
+    private String email;
+    private String password;
     private String status;
-    @Column(name = "current_location")
-    private String currentLocation;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
+    @Column(columnDefinition = "jsonb")
+    private String address;
 }

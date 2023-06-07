@@ -1,6 +1,5 @@
 package com.craft.assignment.carrental.services.external;
 
-import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

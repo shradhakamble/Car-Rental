@@ -1,10 +1,11 @@
 package com.craft.assignment.carrental.services;
 
 import com.craft.assignment.carrental.enums.AccountStatus;
-import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
+import com.craft.assignment.carrental.models.repository.DeviceShippingInfoset;
+import com.craft.assignment.carrental.models.repository.DriverOnboardingJourney;
 import com.craft.assignment.carrental.repository.DeviceShippingRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyHistoryRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
@@ -17,10 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.JobHoldUntil;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -75,14 +72,14 @@ public class DriverOnboardingService {
 
      */
 
-    public void uploadDocument(Long driverId, OnboardingJourneyStep step, MultipartFile documentFile, DocumentType documentType) throws Exception {
+    public void uploadDocument(Long driverId, OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
         OnboardingJourneyStep currentStep = step == null ? OnboardingJourneyStep.POI : step;
         // document validated for current step
         try {
             validateDocument(currentStep, documentFile);
         } catch (Exception ex) {
             if(currentStep == OnboardingJourneyStep.POI) {
-                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentType.name());
+                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
             }
             else {
                 driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
@@ -91,7 +88,7 @@ public class DriverOnboardingService {
             throw new Exception("Error occurred while verification at step: " + currentStep);
         }
         if(currentStep == OnboardingJourneyStep.POI) {
-            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentType.name());
+            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
         }
         else {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
@@ -109,10 +106,6 @@ public class DriverOnboardingService {
         }
     }
 
-    public void initiateBackgroundVerification(DriverIdentification driverIdentification) {
-        // Logic to initiate background verification process
-        // ...
-    }
 
     public void shipTrackingDevice(Long driverId) {
         deviceShippingRepository.saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), BLR);

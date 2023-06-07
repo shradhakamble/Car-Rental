@@ -1,13 +1,12 @@
-package com.craft.assignment.carrental.models;
+package com.craft.assignment.carrental.models.repository;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,20 +14,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "driver_onboarding_journey_step_status_history")
-public class DriverOnboardingJourneyStatusHistory {
+@Table(name = "device_shipping_infoset")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DeviceShippingInfoset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigserial")
     private Long id;
     @Column(columnDefinition = "bigserial")
     private Long driverId;
-    private String step;
-    private String stepStatus;
+    private String status;
+    @Column(name = "current_location")
+    private String currentLocation;
     @Column(name = "created_at")
     private LocalDateTime creationTimestamp;
-    @Lob
-    @Column(name = "document", columnDefinition = "bytea")
-    @Transient
-    private Blob document;
 }

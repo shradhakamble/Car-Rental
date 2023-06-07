@@ -19,7 +19,6 @@ public class TokenValidationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         boolean validToken = tokenValidator.validateToken(request);
-
         if (validToken) {
             return true; // Token is valid, allow the request to proceed
         } else {

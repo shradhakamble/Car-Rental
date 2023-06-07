@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 
 @Component
@@ -20,7 +21,7 @@ public class TokenValidator {
 
     @PostConstruct
     public void init() {
-       // byte[] decodedSecretKey = Base64.getDecoder().decode(jwtSecret);
+        // byte[] decodedSecretKey = Base64.getDecoder().decode(jwtSecret);
         secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 

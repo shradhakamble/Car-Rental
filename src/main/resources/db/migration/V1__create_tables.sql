@@ -27,7 +27,6 @@ CREATE TABLE driver_onboarding_journey (
     driver_id bigserial  NOT NULL,
     current_step VARCHAR(255) NOT NULL,
     current_step_status varchar NOT NULL,
-    document_name VARCHAR(20) NOT NULL,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );

@@ -1,7 +1,6 @@
 package com.craft.assignment.carrental.repository;
 
-import com.craft.assignment.carrental.models.DriverOnboardingJourney;
-import com.craft.assignment.carrental.models.DriverOnboardingJourneyStatusHistory;
+import com.craft.assignment.carrental.models.repository.DriverOnboardingJourneyStatusHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,6 @@
 package com.craft.assignment.carrental.repository;
 
-import com.craft.assignment.carrental.models.DriverInfoset;
-import com.craft.assignment.carrental.models.DriverOnboardingJourney;
+import com.craft.assignment.carrental.models.repository.DriverOnboardingJourney;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,19 +14,15 @@ import java.util.Optional;
 @Transactional
 public interface DriverOnboardingJourneyRepository extends JpaRepository<DriverOnboardingJourney, Long>  {
     @Modifying
-    @Query(value = "INSERT INTO driver_onboarding_journey (driver_id, current_step, current_step_status," +
-        " document_name) " +
-        "VALUES (:driverId, :currentStep, :currentStepStatus, :documentName)",
+    @Query(value = "INSERT INTO driver_onboarding_journey (driver_id, current_step, current_step_status)" +
+        "VALUES (:driverId, :currentStep, :currentStepStatus)",
         nativeQuery = true)
     void saveDriverOnboardingJourney(@Param("driverId") Long driverId,
                                      @Param("currentStep") String currentStep,
-                                     @Param("currentStepStatus") String currentStepStatus,
-                                     @Param("documentName") String documentName);
+                                     @Param("currentStepStatus") String currentStepStatus);
 
-//    @Query("SELECT d FROM DriverOnboardingJourney d WHERE d.driverId = :driverId")
-//    Optional<DriverOnboardingJourney> getJourneyDetailsByDriverId(@Param("driverId") Long driverId);
 
-    @Query(value = "SELECT id, driver_id, current_step, current_step_status, document_name, created_at " +
+    @Query(value = "SELECT id, driver_id, current_step, current_step_status, created_at " +
         "FROM driver_onboarding_journey " +
         "WHERE driver_id = :driverId",
         nativeQuery = true)

@@ -1,7 +1,6 @@
 package com.craft.assignment.carrental.repository;
 
-import com.craft.assignment.carrental.models.DeviceShippingInfoset;
-import com.craft.assignment.carrental.models.DriverInfoset;
+import com.craft.assignment.carrental.models.repository.DeviceShippingInfoset;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
