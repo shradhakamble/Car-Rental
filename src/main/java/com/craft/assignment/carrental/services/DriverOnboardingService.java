@@ -4,6 +4,7 @@ import com.craft.assignment.carrental.enums.DocumentType;
 import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
+import com.craft.assignment.carrental.repository.DeviceShippingRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyHistoryRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
 import com.craft.assignment.carrental.repository.DriverRepository;
@@ -38,7 +39,11 @@ public class DriverOnboardingService {
     @Autowired
     private PartnerDocumentVerificationService partnerDocumentVerificationService;
 
+    @Autowired
+    private DeviceShippingRepository deviceShippingRepository;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String BLR = "BLR";
 
 
     public void registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
@@ -50,8 +55,7 @@ public class DriverOnboardingService {
             driverRegistrationRequest.getDob(),
             driverRegistrationRequest.getEmail(),
             driverRegistrationRequest.getName(),
-            driverRegistrationRequest.getPassword(),
-            driverRegistrationRequest.getStatus()
+            driverRegistrationRequest.getPassword()
         );
     }
 
@@ -91,6 +95,9 @@ public class DriverOnboardingService {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
         }
         driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
+        if(currentStep == OnboardingJourneyStep.PHOTO) {
+            shipTrackingDevice(driverId);
+        }
     }
 
     private void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
@@ -105,14 +112,19 @@ public class DriverOnboardingService {
         // ...
     }
 
-    public void shipTrackingDevice(Address address) {
-        // Logic to trigger the shipping process for a tracking device
-        // ...
+    public void shipTrackingDevice(Long driverId) {
+        deviceShippingRepository.saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), BLR);
+
     }
 
-    public void markReadyForRide(DriverAvailability driverAvailability) {
-        // Logic to update driver's availability status
-        // ...
+
+    // Will be called based on events triggerd by shipping tracking service
+    public void markReadyForRide(Long driverId) {
+        DeviceShippingInfoset shippingInfoset = deviceShippingRepository.getShippingDetailsForADriver(driverId).get();
+        if(Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
+            // mark driver as ready
+            driverRepository.markDriverAsActive(driverId);
+        }
     }
 
     public OnboardingJourneyStep getCurrentOnboardingStepForAUser(Long driverId) {

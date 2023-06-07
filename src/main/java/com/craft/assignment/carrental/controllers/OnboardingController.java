@@ -54,30 +54,10 @@ public class OnboardingController {
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/registered/background-verification")
-    public ResponseEntity<String> initiateBackgroundVerification(@RequestBody DriverIdentification driverIdentification) {
-        return new ResponseEntity<>("Background verification initiated", HttpStatus.OK);
-    }
-
     @GetMapping("/registered/onboarding/current-step")
     public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) {
         OnboardingJourneyStep status = driverOnboardingService.getCurrentOnboardingStepForAUser(driverId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    @PostMapping("/registered/tracking-device/shipping")
-    public ResponseEntity<String> shipTrackingDevice(@RequestBody Address address) {
-        // Logic to trigger the shipping process for a tracking device
-        // ...
-
-        return new ResponseEntity<>("Tracking device shipping process initiated", HttpStatus.OK);
-    }
-
-    @PostMapping("/registered/ride/ready")
-    public ResponseEntity<String> markReadyForRide(@RequestBody DriverAvailability driverAvailability) {
-        // Logic to update driver's availability status
-        // ...
-
-        return new ResponseEntity<>("Driver marked as ready for a ride", HttpStatus.OK);
-    }
 }
