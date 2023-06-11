@@ -7,6 +7,7 @@ import com.craft.assignment.carrental.utils.HashUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -20,6 +21,7 @@ public class AuthService {
     private final DriverRepository driverRepository;
 
     private final SecretKey jwtSecretKey;
+
     private final long jwtExpirationTime;
 
     @Autowired

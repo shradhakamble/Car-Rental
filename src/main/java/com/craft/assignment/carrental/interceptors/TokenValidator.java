@@ -3,26 +3,18 @@ package com.craft.assignment.carrental.interceptors;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 
 @Component
 public class TokenValidator {
 
-    @Value("${jwt.secretKey}")
-    private String jwtSecret;
+    private final SecretKey jwtSecretKey;
 
-    private Key secretKey;
-
-    @PostConstruct
-    public void init() {
-        // byte[] decodedSecretKey = Base64.getDecoder().decode(jwtSecret);
-        secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    public TokenValidator(SecretKey jwtSecretKey) {
+        this.jwtSecretKey = jwtSecretKey;
     }
 
     public boolean validateToken(HttpServletRequest request) {
@@ -31,7 +23,7 @@ public class TokenValidator {
         if (token != null) {
             try {
                 Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(jwtSecretKey)
                     .build()
                     .parseClaimsJws(token);
 
@@ -53,7 +45,6 @@ public class TokenValidator {
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
-
         return null;
     }
 }
