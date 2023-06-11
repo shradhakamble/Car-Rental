@@ -80,23 +80,21 @@ public class DriverOnboardingService {
         try {
             validateDocument(currentStep, documentFile);
         } catch (Exception ex) {
-            if(currentStep == OnboardingJourneyStep.POI) {
+            if (currentStep == OnboardingJourneyStep.POI) {
                 driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
-            }
-            else {
+            } else {
                 driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
             }
             driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
             throw new Exception("Error occurred while verification at step: " + currentStep);
         }
-        if(currentStep == OnboardingJourneyStep.POI) {
+        if (currentStep == OnboardingJourneyStep.POI) {
             driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
-        }
-        else {
+        } else {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
         }
         driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
-        if(currentStep == OnboardingJourneyStep.PHOTO) {
+        if (currentStep == OnboardingJourneyStep.PHOTO) {
             shipTrackingDevice(driverId);
         }
     }
@@ -114,16 +112,16 @@ public class DriverOnboardingService {
     }
 
 
-    // Will be called based on events triggerd by shipping tracking service
+    // Will be called based on events triggered by shipping tracking service
     public void markReadyForRide(Long driverId) {
         DeviceShippingInfoset shippingInfoset = deviceShippingRepository.getShippingDetailsForADriver(driverId).get();
-        if(Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
+        if (Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
             // mark driver as ready
             driverRepository.markDriverAsActive(driverId, AccountStatus.ACTIVE.name());
         }
     }
 
-    public OnboardingJourneyStep getCurrentOnboardingStepForAUser(Long driverId) {
+    public OnboardingJourneyStep getCurrentOnboardingStepForAUser(Long driverId) throws Exception {
 
         /*
           Step Orders:
@@ -132,11 +130,11 @@ public class DriverOnboardingService {
           3. VEHICLE_VERIFICATION
           4. PHOTO
          */
+
         Optional<DriverOnboardingJourney> journey = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId);
         if (journey.isEmpty() || journey.get().getCurrentStep() == null) {
             return OnboardingJourneyStep.POI;
-        }
-        else {
+        } else {
             String journeyStatus = journey.get().getCurrentStep();
             if (!Objects.equals(journey.get().getCurrentStepStatus(), JourneyStatus.SUCCESS.name())) {
                 return OnboardingJourneyStep.valueOf(journeyStatus);
@@ -146,17 +144,16 @@ public class DriverOnboardingService {
                     return OnboardingJourneyStep.DRIVING_LICENSE;
                 } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.DRIVING_LICENSE.name())) {
                     return OnboardingJourneyStep.VEHICLE_VERIFICATION;
-                }  else if (Objects.equals(journeyStatus, OnboardingJourneyStep.VEHICLE_VERIFICATION.name())) {
+                } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.VEHICLE_VERIFICATION.name())) {
                     return OnboardingJourneyStep.PHOTO;
-                }
-                else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
+                } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
                     return null;
                 }
-            }
-            else  {
+            } else {
                 return OnboardingJourneyStep.valueOf(journeyStatus);
             }
         }
-        return null;
+
+        throw new Exception("Invalid driver information");
     }
 }

@@ -45,14 +45,14 @@ public class OnboardingController {
     public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId,
                                                   @RequestParam(value = "currentStep", required = false) OnboardingJourneyStep currentStep,
                                                   @RequestParam(value = "file", required = false) MultipartFile file
-                                                 ) throws Exception {
+    ) throws Exception {
 
         driverOnboardingService.uploadDocument(driverId, currentStep, file);
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
     @GetMapping("/registered/onboarding/current-step")
-    public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) {
+    public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) throws Exception {
         OnboardingJourneyStep status = driverOnboardingService.getCurrentOnboardingStepForAUser(driverId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
