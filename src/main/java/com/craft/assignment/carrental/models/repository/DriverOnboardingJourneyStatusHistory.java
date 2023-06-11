@@ -10,10 +10,7 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.time.LocalDateTime;
 
-@Data
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "driver_onboarding_journey_step_status_history")
 public class DriverOnboardingJourneyStatusHistory {

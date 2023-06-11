@@ -11,18 +11,12 @@ $$ LANGUAGE plpgsql;
 
 -- Drop the existing trigger if it exists
 DROP TRIGGER IF EXISTS update_updated_at_trigger ON public.driver_infoset;
-DROP TRIGGER IF EXISTS update_updated_at_trigger ON public.driver_vehicle_infoset;
 DROP TRIGGER IF EXISTS update_updated_at_trigger ON public.driver_onboarding_journey;
 DROP TRIGGER IF EXISTS update_updated_at_trigger ON public.driver_onboarding_journey_step_status_history; -- Modify with your table names
 
 -- Create the trigger
 CREATE TRIGGER update_updated_at_trigger
 BEFORE UPDATE ON public.driver_infoset
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_function();
-
-CREATE TRIGGER update_updated_at_trigger
-BEFORE UPDATE ON public.driver_vehicle_infoset
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_function();
 

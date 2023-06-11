@@ -22,9 +22,8 @@ public class OnboardingController {
         this.authService = authService;
     }
 
-    //TODO - Add vehicle number column
     @PostMapping("/register")
-    public ResponseEntity<String> registerDriver(@RequestBody DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
+    public ResponseEntity<String> registerDriver(@RequestBody DriverRegistrationRequest driverRegistrationRequest) throws Exception {
         driverOnboardingService.registerDriver(driverRegistrationRequest);
         return new ResponseEntity<>("Driver registered successfully", HttpStatus.OK);
     }

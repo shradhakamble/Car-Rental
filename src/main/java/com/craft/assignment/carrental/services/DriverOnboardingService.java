@@ -15,6 +15,8 @@ import com.craft.assignment.carrental.services.external.PartnerDocumentVerificat
 import com.craft.assignment.carrental.utils.HashUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,23 +46,29 @@ public class DriverOnboardingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String BLR = "BLR";
 
+    Logger logger = LoggerFactory.getLogger(DriverOnboardingService.class);
 
-    public void registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
-
-        driverRegistrationRequest.setPassword(HashUtils.hashPassword(driverRegistrationRequest.getPassword()));
-        driverRepository.saveDriverInfoset(
-            objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()),
-            driverRegistrationRequest.getContactNumber(),
-            driverRegistrationRequest.getDob(),
-            driverRegistrationRequest.getEmail(),
-            driverRegistrationRequest.getName(),
-            driverRegistrationRequest.getPassword(),
-            driverRegistrationRequest.getStatus(),
-            driverRegistrationRequest.getVehicleNumber()
-        );
+    public void registerDriver(DriverRegistrationRequest driverRegistrationRequest) throws Exception {
+        logger.info("Driver registration request received with email: " + driverRegistrationRequest.getEmail());
+        try {
+            driverRegistrationRequest.setPassword(HashUtils.hashPassword(driverRegistrationRequest.getPassword()));
+            driverRepository.saveDriverInfoset(
+                objectMapper.writeValueAsString(driverRegistrationRequest.getAddress()),
+                driverRegistrationRequest.getContactNumber(),
+                driverRegistrationRequest.getDob(),
+                driverRegistrationRequest.getEmail(),
+                driverRegistrationRequest.getName(),
+                driverRegistrationRequest.getPassword(),
+                driverRegistrationRequest.getStatus(),
+                driverRegistrationRequest.getVehicleNumber()
+            );
+            logger.info("Driver registered successfully with email: " + driverRegistrationRequest.getEmail());
+        } catch (Exception ex) {
+            logger.error("Error occurred while registering driver with email: " + driverRegistrationRequest.getEmail() + "due to: " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    // TODO: this can be made async by pushing to SQS
     /*
         Steps:
         1. Mark current step status as INITIATED & push the journeyId, step & userId to queue
@@ -71,30 +79,31 @@ public class DriverOnboardingService {
     /*
         In current approach: (Sync upload)
         1. Validate the document and save
-
      */
 
     public void uploadDocument(Long driverId, OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
-        OnboardingJourneyStep currentStep = step == null ? OnboardingJourneyStep.POI : step;
+        logger.info("Driver document upload request received for driver :" + driverId + " with current step: " + step.name());
         // document validated for current step
         try {
-            validateDocument(currentStep, documentFile);
+            validateDocument(step, documentFile);
         } catch (Exception ex) {
-            if (currentStep == OnboardingJourneyStep.POI) {
-                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
+            logger.error("Error occurred while uploading document for driver :" + driverId + " with current step: " + step.name() + " due to " + ex.getMessage());
+            if (step == OnboardingJourneyStep.POI) {
+                driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, step.name(), JourneyStatus.FAILURE.name());
             } else {
-                driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.FAILURE.name());
+                driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.FAILURE.name());
             }
-            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
-            throw new Exception("Error occurred while verification at step: " + currentStep);
+            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
+            throw new Exception("Error occurred while verification at step: " + step);
         }
-        if (currentStep == OnboardingJourneyStep.POI) {
-            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
+        if (step == OnboardingJourneyStep.POI) {
+            driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, step.name(), JourneyStatus.SUCCESS.name());
         } else {
-            driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, currentStep.name(), JourneyStatus.SUCCESS.name());
+            driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         }
-        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, currentStep.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
-        if (currentStep == OnboardingJourneyStep.PHOTO) {
+        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
+        if (step == OnboardingJourneyStep.PHOTO) {
+            logger.info("Driver document upload request received for driver :" + driverId + " with current step: " + step.name() + " completed, initiating device shipping process");
             shipTrackingDevice(driverId);
         }
     }
@@ -108,16 +117,20 @@ public class DriverOnboardingService {
 
 
     public void shipTrackingDevice(Long driverId) {
+        logger.info("Driver device shipping request for driver :" + driverId + " received");
         deviceShippingRepository.saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), BLR);
     }
 
 
     // Will be called based on events triggered by shipping tracking service
     public void markReadyForRide(Long driverId) {
+        logger.info("Request to mark driver active received for driver :" + driverId);
         DeviceShippingInfoset shippingInfoset = deviceShippingRepository.getShippingDetailsForADriver(driverId).get();
         if (Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
             // mark driver as ready
             driverRepository.markDriverAsActive(driverId, AccountStatus.ACTIVE.name());
+            logger.info("Driver :" + driverId + " marked active successfully");
+
         }
     }
 
@@ -150,7 +163,6 @@ public class DriverOnboardingService {
                 }
             }
         }
-
         throw new Exception("Invalid driver information");
     }
 }

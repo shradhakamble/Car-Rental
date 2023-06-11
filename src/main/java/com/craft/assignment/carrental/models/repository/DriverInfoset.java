@@ -12,10 +12,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
-@Data
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "driver_infoset")
 @JsonIgnoreProperties(ignoreUnknown = true)
