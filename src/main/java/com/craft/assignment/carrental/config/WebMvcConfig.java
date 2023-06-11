@@ -21,6 +21,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenValidationInterceptor)
-            .addPathPatterns("/api/driver/registered/**"); // Specify the API endpoints to be intercepted
+            .addPathPatterns("/onboarding/driver/auth/**"); // Specify the API endpoints to be intercepted
     }
 }

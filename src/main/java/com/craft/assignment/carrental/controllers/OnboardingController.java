@@ -4,13 +4,12 @@ import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
 import com.craft.assignment.carrental.services.DriverOnboardingService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequestMapping("/api/driver")
+@RequestMapping("/onboarding/driver")
 @RestController
 public class OnboardingController {
 
@@ -40,7 +39,7 @@ public class OnboardingController {
     }
 
 
-    @PostMapping("/registered/documents/upload")
+    @PostMapping("/auth/document-upload")
     public ResponseEntity<String> uploadDocuments(@RequestParam("driverId") Long driverId,
                                                   @RequestParam(value = "currentStep", required = false) OnboardingJourneyStep currentStep,
                                                   @RequestParam(value = "file", required = false) MultipartFile file
@@ -50,13 +49,13 @@ public class OnboardingController {
         return new ResponseEntity<>("Document uploaded successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/registered/onboarding/current-step")
+    @GetMapping("/auth/current-step")
     public ResponseEntity<OnboardingJourneyStep> getCurrentOnboardingStepForAUser(@RequestParam("driverId") Long driverId) throws Exception {
         OnboardingJourneyStep status = driverOnboardingService.getCurrentOnboardingStepForAUser(driverId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    @PostMapping("/registered/mark-driver-active")
+    @PostMapping("/auth/mark-driver-active")
     public ResponseEntity<String> markDriverActive(@RequestParam("driverId") Long driverId
     ) {
         driverOnboardingService.markReadyForRide(driverId);
