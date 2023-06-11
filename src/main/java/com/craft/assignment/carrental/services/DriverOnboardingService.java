@@ -13,7 +13,6 @@ import com.craft.assignment.carrental.repository.DriverOnboardingJourneyReposito
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.services.external.PartnerDocumentVerificationService;
 import com.craft.assignment.carrental.utils.HashUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +107,7 @@ public class DriverOnboardingService {
         }
     }
 
-    private void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
+     void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
         boolean response = partnerDocumentVerificationService.validateDocument(step, documentFile);
         if (!response) {
             throw new Exception("Document verification failed for step: " + step.name());
