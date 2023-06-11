@@ -138,8 +138,7 @@ public class DriverOnboardingService {
             String journeyStatus = journey.get().getCurrentStep();
             if (!Objects.equals(journey.get().getCurrentStepStatus(), JourneyStatus.SUCCESS.name())) {
                 return OnboardingJourneyStep.valueOf(journeyStatus);
-            }
-            if (journey.get().getCurrentStepStatus().equals(JourneyStatus.SUCCESS.name())) {
+            } else if (journey.get().getCurrentStepStatus().equals(JourneyStatus.SUCCESS.name())) {
                 if (Objects.equals(journeyStatus, OnboardingJourneyStep.POI.name())) {
                     return OnboardingJourneyStep.DRIVING_LICENSE;
                 } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.DRIVING_LICENSE.name())) {
@@ -149,8 +148,6 @@ public class DriverOnboardingService {
                 } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.PHOTO.name())) {
                     return null;
                 }
-            } else {
-                return OnboardingJourneyStep.valueOf(journeyStatus);
             }
         }
 
