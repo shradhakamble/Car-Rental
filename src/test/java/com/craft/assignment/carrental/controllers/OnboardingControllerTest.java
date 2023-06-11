@@ -4,7 +4,7 @@ import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.DriverRegistrationRequest;
 import com.craft.assignment.carrental.models.LoginRequest;
 import com.craft.assignment.carrental.services.AuthService;
-import com.craft.assignment.carrental.services.DriverOnboardingService;
+import com.craft.assignment.carrental.services.impl.DriverOnboardingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

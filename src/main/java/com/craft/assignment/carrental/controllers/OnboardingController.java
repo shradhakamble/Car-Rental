@@ -3,7 +3,7 @@ package com.craft.assignment.carrental.controllers;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.services.AuthService;
-import com.craft.assignment.carrental.services.DriverOnboardingService;
+import com.craft.assignment.carrental.services.impl.DriverOnboardingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

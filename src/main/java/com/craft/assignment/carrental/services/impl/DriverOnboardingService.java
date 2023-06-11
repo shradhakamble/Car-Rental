@@ -1,4 +1,4 @@
-package com.craft.assignment.carrental.services;
+package com.craft.assignment.carrental.services.impl;
 
 import com.craft.assignment.carrental.enums.AccountStatus;
 import com.craft.assignment.carrental.enums.JourneyStatus;
@@ -11,6 +11,7 @@ import com.craft.assignment.carrental.repository.DeviceShippingRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyHistoryRepository;
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
 import com.craft.assignment.carrental.repository.DriverRepository;
+import com.craft.assignment.carrental.services.IDriverOnboardingService;
 import com.craft.assignment.carrental.services.external.PartnerDocumentVerificationService;
 import com.craft.assignment.carrental.utils.HashUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 
 @Service
-public class DriverOnboardingService {
+public class DriverOnboardingService implements IDriverOnboardingService {
 
     @Autowired
     private DriverRepository driverRepository;

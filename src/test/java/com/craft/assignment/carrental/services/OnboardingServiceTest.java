@@ -13,6 +13,7 @@ import com.craft.assignment.carrental.repository.DriverOnboardingJourneyHistoryR
 import com.craft.assignment.carrental.repository.DriverOnboardingJourneyRepository;
 import com.craft.assignment.carrental.repository.DriverRepository;
 import com.craft.assignment.carrental.services.external.PartnerDocumentVerificationService;
+import com.craft.assignment.carrental.services.impl.DriverOnboardingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
