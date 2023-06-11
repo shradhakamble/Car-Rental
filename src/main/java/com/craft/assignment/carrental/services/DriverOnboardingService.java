@@ -3,6 +3,7 @@ package com.craft.assignment.carrental.services;
 import com.craft.assignment.carrental.enums.AccountStatus;
 import com.craft.assignment.carrental.enums.JourneyStatus;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
+import com.craft.assignment.carrental.enums.ShippingStatus;
 import com.craft.assignment.carrental.models.*;
 import com.craft.assignment.carrental.models.repository.DeviceShippingInfoset;
 import com.craft.assignment.carrental.models.repository.DriverOnboardingJourney;
@@ -54,7 +55,8 @@ public class DriverOnboardingService {
             driverRegistrationRequest.getEmail(),
             driverRegistrationRequest.getName(),
             driverRegistrationRequest.getPassword(),
-            driverRegistrationRequest.getStatus()
+            driverRegistrationRequest.getStatus(),
+            driverRegistrationRequest.getVehicleNumber()
         );
     }
 
@@ -109,7 +111,6 @@ public class DriverOnboardingService {
 
     public void shipTrackingDevice(Long driverId) {
         deviceShippingRepository.saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), BLR);
-
     }
 
 

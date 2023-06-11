@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class OnboardingController {
 
     private final DriverOnboardingService driverOnboardingService;
-
     private final AuthService authService;
 
     public OnboardingController(DriverOnboardingService driverOnboardingService, AuthService authService) {
@@ -23,6 +22,7 @@ public class OnboardingController {
         this.authService = authService;
     }
 
+    //TODO - Add vehicle number column
     @PostMapping("/register")
     public ResponseEntity<String> registerDriver(@RequestBody DriverRegistrationRequest driverRegistrationRequest) throws JsonProcessingException {
         driverOnboardingService.registerDriver(driverRegistrationRequest);

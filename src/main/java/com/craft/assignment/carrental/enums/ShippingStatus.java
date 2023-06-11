@@ -1,4 +1,4 @@
-package com.craft.assignment.carrental.models;
+package com.craft.assignment.carrental.enums;
 
 /**
  * Status to track device shipping
