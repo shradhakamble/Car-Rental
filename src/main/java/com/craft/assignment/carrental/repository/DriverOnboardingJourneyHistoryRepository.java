@@ -14,16 +14,17 @@ import java.util.Optional;
 @Transactional
 public interface DriverOnboardingJourneyHistoryRepository extends JpaRepository<DriverOnboardingJourneyStatusHistory, Long> {
     @Modifying
-    @Query(value = "INSERT INTO driver_onboarding_journey_step_status_history (driver_id, step, step_status," +
+    @Query(value = "INSERT INTO driver_onboarding_journey_step_status_history (journey_id, driver_id, step, step_status," +
         "document) " +
-        "VALUES (:driverId, :step, :stepStatus, :document)",
+        "VALUES (:journeyId, :driverId, :step, :stepStatus, :document)",
         nativeQuery = true)
-    void saveDriverOnboardingJourneyHistory(@Param("driverId") Long driverId,
-                                     @Param("step") String step,
-                                     @Param("stepStatus") String stepStatus,
-                                     @Param("document") byte[] document);
+    void saveDriverOnboardingJourneyHistory(@Param("journeyId") Long journeyId,
+                                            @Param("driverId") Long driverId,
+                                            @Param("step") String step,
+                                            @Param("stepStatus") String stepStatus,
+                                            @Param("document") byte[] document);
 
-    @Query(value = "SELECT id, driver_id, current_step, step, step_status, created_at " +
+    @Query(value = "SELECT id, journey_id, driver_id, current_step, step, step_status, created_at " +
         "FROM driver_onboarding_journey_step_status_history " +
         "WHERE driver_id = :driverId",
         nativeQuery = true)

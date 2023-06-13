@@ -84,12 +84,16 @@ public class OnboardingServiceTest {
         Long driverId = 1L;
         OnboardingJourneyStep step = OnboardingJourneyStep.POI;
         when(mockPartnerDocumentVerificationService.validateDocument(step, mockMultipartFile)).thenReturn(true);
+        DriverOnboardingJourney mockedDriverJourneyInfoset = new DriverOnboardingJourney();
+        mockedDriverJourneyInfoset.setDriverId(driverId);
+        mockedDriverJourneyInfoset.setId(1L);
+        when(mockDriverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId)).thenReturn(Optional.of(mockedDriverJourneyInfoset));
         // Call the method to be tested
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
         verify(mockDriverOnboardingJourneyRepository).saveDriverOnboardingJourney(driverId, step.name(), JourneyStatus.SUCCESS.name());
-        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
+        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
     }
 
     @Test
@@ -102,11 +106,16 @@ public class OnboardingServiceTest {
         OnboardingJourneyStep step = OnboardingJourneyStep.DRIVING_LICENSE;
         when(mockPartnerDocumentVerificationService.validateDocument(step, mockMultipartFile)).thenReturn(true);
         // Call the method to be tested
+
+        DriverOnboardingJourney mockedDriverJourneyInfoset = new DriverOnboardingJourney();
+        mockedDriverJourneyInfoset.setDriverId(driverId);
+        mockedDriverJourneyInfoset.setId(1L);
+        when(mockDriverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId)).thenReturn(Optional.of(mockedDriverJourneyInfoset));
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
-        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
+        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
     }
 
     @Test
@@ -119,11 +128,15 @@ public class OnboardingServiceTest {
         OnboardingJourneyStep step = OnboardingJourneyStep.VEHICLE_VERIFICATION;
         when(mockPartnerDocumentVerificationService.validateDocument(step, mockMultipartFile)).thenReturn(true);
         // Call the method to be tested
+        DriverOnboardingJourney mockedDriverJourneyInfoset = new DriverOnboardingJourney();
+        mockedDriverJourneyInfoset.setDriverId(driverId);
+        mockedDriverJourneyInfoset.setId(1L);
+        when(mockDriverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId)).thenReturn(Optional.of(mockedDriverJourneyInfoset));
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
-        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
+        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
     }
 
     @Test
@@ -135,12 +148,16 @@ public class OnboardingServiceTest {
         Long driverId = 1L;
         OnboardingJourneyStep step = OnboardingJourneyStep.PHOTO;
         when(mockPartnerDocumentVerificationService.validateDocument(step, mockMultipartFile)).thenReturn(true);
+        DriverOnboardingJourney mockedDriverJourneyInfoset = new DriverOnboardingJourney();
+        mockedDriverJourneyInfoset.setDriverId(driverId);
+        mockedDriverJourneyInfoset.setId(1L);
+        when(mockDriverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId)).thenReturn(Optional.of(mockedDriverJourneyInfoset));
         // Call the method to be tested
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
-        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
+        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
         verify(mockDeviceShippingRepository).saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), "BLR");
     }
 

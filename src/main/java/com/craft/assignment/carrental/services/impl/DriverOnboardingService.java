@@ -86,6 +86,7 @@ public class DriverOnboardingService implements IDriverOnboardingService {
         // document validated for current step
         try {
             validateDocument(step, documentFile);
+            driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         } catch (Exception ex) {
             logger.error("Error occurred while uploading document for driver :" + driverId + " with current step: " + step.name() + " due to " + ex.getMessage());
             if (step == OnboardingJourneyStep.POI) {
@@ -93,7 +94,8 @@ public class DriverOnboardingService implements IDriverOnboardingService {
             } else {
                 driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.FAILURE.name());
             }
-            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
+            Long journeyId = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId).get().getId();
+            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(journeyId, driverId, step.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
             throw new Exception("Error occurred while verification at step: " + step);
         }
         if (step == OnboardingJourneyStep.POI) {
@@ -101,7 +103,8 @@ public class DriverOnboardingService implements IDriverOnboardingService {
         } else {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         }
-        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(driverId, step.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
+        Long journeyId = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId).get().getId();
+        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(journeyId, driverId, step.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
         if (step == OnboardingJourneyStep.PHOTO) {
             logger.info("Driver document upload request received for driver :" + driverId + " with current step: " + step.name() + " completed, initiating device shipping process");
             shipTrackingDevice(driverId);

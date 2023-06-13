@@ -17,12 +17,12 @@ public interface DriverOnboardingJourneyRepository extends JpaRepository<DriverO
     @Query(value = "INSERT INTO driver_onboarding_journey (driver_id, current_step, current_step_status)" +
         "VALUES (:driverId, :currentStep, :currentStepStatus)",
         nativeQuery = true)
-    void saveDriverOnboardingJourney(@Param("driverId") Long driverId,
+    int saveDriverOnboardingJourney(@Param("driverId") Long driverId,
                                      @Param("currentStep") String currentStep,
                                      @Param("currentStepStatus") String currentStepStatus);
 
 
-    @Query(value = "SELECT id, driver_id, current_step, current_step_status, created_at " +
+    @Query(value = "SELECT id, driver_id, current_step, current_step_status, metadata, created_at " +
         "FROM driver_onboarding_journey " +
         "WHERE driver_id = :driverId",
         nativeQuery = true)

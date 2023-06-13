@@ -17,6 +17,8 @@ public class DriverOnboardingJourney {
     private Long id;
     @Column(columnDefinition = "bigserial")
     private Long driverId;
+    @Column(columnDefinition = "jsonb")
+    private String metadata;
     private String currentStep;
     private String currentStepStatus;
     @Column(name = "created_at")

@@ -20,6 +20,8 @@ public class DriverOnboardingJourneyStatusHistory {
     private Long id;
     @Column(columnDefinition = "bigserial")
     private Long driverId;
+    @Column(columnDefinition = "bigserial")
+    private Long journeyId;
     private String step;
     private String stepStatus;
     @Column(name = "created_at")
