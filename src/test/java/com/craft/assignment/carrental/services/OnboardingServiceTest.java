@@ -114,7 +114,7 @@ public class OnboardingServiceTest {
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
     }
 
@@ -135,7 +135,7 @@ public class OnboardingServiceTest {
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
     }
 
@@ -156,7 +156,7 @@ public class OnboardingServiceTest {
         onboardingService.uploadDocument(driverId, step, mockMultipartFile);
 
         // Verify that the mocked dependencies are interacted with as expected
-        verify(mockDriverOnboardingJourneyRepository, times(2)).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+        verify(mockDriverOnboardingJourneyRepository).updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         verify(mockDriverOnboardingJourneyHistoryRepository).saveDriverOnboardingJourneyHistory(1L, driverId, step.name(), JourneyStatus.SUCCESS.name(), mockMultipartFile.getBytes());
         verify(mockDeviceShippingRepository).saveDeviceShippingDetails(driverId, ShippingStatus.DISPATCHED.name(), "BLR");
     }
