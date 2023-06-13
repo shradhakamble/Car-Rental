@@ -57,7 +57,7 @@ public class OnboardingController {
 
     @PostMapping("/auth/mark-driver-active")
     public ResponseEntity<String> markDriverActive(@RequestParam("driverId") Long driverId
-    ) {
+    ) throws Exception {
         driverOnboardingService.markReadyForRide(driverId);
         return new ResponseEntity<>("Driver marked as active", HttpStatus.OK);
     }

@@ -83,30 +83,43 @@ public class DriverOnboardingService implements IDriverOnboardingService {
 
     public void uploadDocument(Long driverId, OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
         logger.info("Driver document upload request received for driver :" + driverId + " with current step: " + step.name());
+
         // document validated for current step
         try {
+
             validateDocument(step, documentFile);
-            driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
+
         } catch (Exception ex) {
-            logger.error("Error occurred while uploading document for driver :" + driverId + " with current step: " + step.name() + " due to " + ex.getMessage());
+            logger.error("Error occurred while uploading document for driver :" + driverId +
+                " with current step: " + step.name() + " due to " + ex.getMessage());
+
             if (step == OnboardingJourneyStep.POI) {
                 driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, step.name(), JourneyStatus.FAILURE.name());
             } else {
                 driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.FAILURE.name());
             }
+
             Long journeyId = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId).get().getId();
-            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(journeyId, driverId, step.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
+            driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(
+                journeyId, driverId, step.name(), JourneyStatus.FAILURE.name(), documentFile.getBytes());
+
             throw new Exception("Error occurred while verification at step: " + step);
         }
+
         if (step == OnboardingJourneyStep.POI) {
             driverOnboardingJourneyRepository.saveDriverOnboardingJourney(driverId, step.name(), JourneyStatus.SUCCESS.name());
         } else {
             driverOnboardingJourneyRepository.updateJourneyDetailsByDriverId(driverId, step.name(), JourneyStatus.SUCCESS.name());
         }
+
         Long journeyId = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId).get().getId();
-        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(journeyId, driverId, step.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
+        driverOnboardingJourneyHistoryRepository.saveDriverOnboardingJourneyHistory(
+            journeyId, driverId, step.name(), JourneyStatus.SUCCESS.name(), documentFile.getBytes());
+
         if (step == OnboardingJourneyStep.PHOTO) {
-            logger.info("Driver document upload request received for driver :" + driverId + " with current step: " + step.name() + " completed, initiating device shipping process");
+            logger.info("Driver document upload request received for driver :" + driverId +
+                " with current step: " + step.name() + " completed, initiating device shipping process");
+
             shipTrackingDevice(driverId);
         }
     }
@@ -126,14 +139,18 @@ public class DriverOnboardingService implements IDriverOnboardingService {
 
 
     // Will be called based on events triggered by shipping tracking service
-    public void markReadyForRide(Long driverId) {
+    public void markReadyForRide(Long driverId) throws Exception {
         logger.info("Request to mark driver active received for driver :" + driverId);
+
         DeviceShippingInfoset shippingInfoset = deviceShippingRepository.getShippingDetailsForADriver(driverId).get();
+
         if (Objects.equals(shippingInfoset.getStatus(), ShippingStatus.DELIVERED.name())) {
             // mark driver as ready
             driverRepository.markDriverAsActive(driverId, AccountStatus.ACTIVE.name());
-            logger.info("Driver :" + driverId + " marked active successfully");
 
+            logger.info("Driver :" + driverId + " marked active successfully");
+        } else {
+            throw new Exception("Device is not yet delivered for driver : " + driverId);
         }
     }
 
@@ -148,13 +165,17 @@ public class DriverOnboardingService implements IDriverOnboardingService {
          */
 
         Optional<DriverOnboardingJourney> journey = driverOnboardingJourneyRepository.getJourneyDetailsByDriverId(driverId);
+
         if (journey.isEmpty() || journey.get().getCurrentStep() == null) {
             return OnboardingJourneyStep.POI;
         } else {
+
             String journeyStatus = journey.get().getCurrentStep();
+
             if (!Objects.equals(journey.get().getCurrentStepStatus(), JourneyStatus.SUCCESS.name())) {
                 return OnboardingJourneyStep.valueOf(journeyStatus);
             } else if (journey.get().getCurrentStepStatus().equals(JourneyStatus.SUCCESS.name())) {
+
                 if (Objects.equals(journeyStatus, OnboardingJourneyStep.POI.name())) {
                     return OnboardingJourneyStep.DRIVING_LICENSE;
                 } else if (Objects.equals(journeyStatus, OnboardingJourneyStep.DRIVING_LICENSE.name())) {
@@ -166,6 +187,7 @@ public class DriverOnboardingService implements IDriverOnboardingService {
                 }
             }
         }
+
         throw new Exception("Invalid driver information");
     }
 }

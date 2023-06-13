@@ -162,7 +162,7 @@ public class OnboardingServiceTest {
     }
 
     @Test
-    public void testMarkReadyForRide() {
+    public void testMarkReadyForRide() throws Exception {
         Long driverId = 1L;
         DeviceShippingInfoset mockedShippingInfoset = new DeviceShippingInfoset();
         mockedShippingInfoset.setStatus(ShippingStatus.DELIVERED.name());
