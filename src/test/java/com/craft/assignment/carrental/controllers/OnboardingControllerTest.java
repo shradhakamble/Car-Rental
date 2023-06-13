@@ -3,7 +3,7 @@ package com.craft.assignment.carrental.controllers;
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.DriverRegistrationRequest;
 import com.craft.assignment.carrental.models.LoginRequest;
-import com.craft.assignment.carrental.services.AuthService;
+import com.craft.assignment.carrental.services.impl.AuthService;
 import com.craft.assignment.carrental.services.impl.DriverOnboardingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,10 +59,10 @@ public class OnboardingControllerTest {
 
         // Mock the behavior of the authService.authenticateDriver method
         String jwtToken = "token1";
-        when(mockAuthService.authenticateDriver(any(String.class), any(String.class))).thenReturn(jwtToken);
+        when(mockAuthService.authenticateDriver(any(String.class), any(String.class), any(String.class))).thenReturn(jwtToken);
 
-        ResponseEntity<?> response = onboardingController.loginDriver(request);
-        verify(mockAuthService).authenticateDriver(request.getEmail(), request.getPassword());
+        ResponseEntity<?> response = onboardingController.loginDriver("temp", request);
+        verify(mockAuthService).authenticateDriver("temp", request.getEmail(), request.getPassword());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

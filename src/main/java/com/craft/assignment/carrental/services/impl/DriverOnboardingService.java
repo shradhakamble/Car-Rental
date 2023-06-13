@@ -73,7 +73,7 @@ public class DriverOnboardingService implements IDriverOnboardingService {
         Steps:
         1. Mark current step status as INITIATED & push the journeyId, step & userId to queue
         2. Upload file to s3 & get pre signed url
-        3. Pre process the document to verify if details are correct
+        3. Pre-process the document to verify if details are correct
         4. Mark step as success & store url in DB
      */
     /*
@@ -111,7 +111,7 @@ public class DriverOnboardingService implements IDriverOnboardingService {
         }
     }
 
-     void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
+    void validateDocument(OnboardingJourneyStep step, MultipartFile documentFile) throws Exception {
         boolean response = partnerDocumentVerificationService.validateDocument(step, documentFile);
         if (!response) {
             throw new Exception("Document verification failed for step: " + step.name());

@@ -2,7 +2,7 @@ package com.craft.assignment.carrental.controllers;
 
 import com.craft.assignment.carrental.enums.OnboardingJourneyStep;
 import com.craft.assignment.carrental.models.*;
-import com.craft.assignment.carrental.services.AuthService;
+import com.craft.assignment.carrental.services.impl.AuthService;
 import com.craft.assignment.carrental.services.impl.DriverOnboardingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +28,8 @@ public class OnboardingController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginDriver(@RequestBody LoginRequest loginRequest) {
-        String jwtToken = authService.authenticateDriver(loginRequest.getEmail(), loginRequest.getPassword());
+    public ResponseEntity<?> loginDriver(@RequestHeader("Session-Id") String sessionId, @RequestBody LoginRequest loginRequest) {
+        String jwtToken = authService.authenticateDriver(sessionId, loginRequest.getEmail(), loginRequest.getPassword());
 
         if (jwtToken != null) {
             return ResponseEntity.ok(new LoginResponse(jwtToken));
