@@ -2,13 +2,7 @@ package com.craft.assignment.carrental.models.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 

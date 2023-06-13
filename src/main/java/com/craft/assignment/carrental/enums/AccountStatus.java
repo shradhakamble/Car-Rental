@@ -7,5 +7,8 @@ package com.craft.assignment.carrental.enums;
  * INACTIVE: Profile deleted
  */
 public enum AccountStatus {
-    ACTIVE, INACTIVE, FRAUD, IN_PROGRESS
+    ACTIVE,
+    INACTIVE,
+    FRAUD,
+    IN_PROGRESS
 }

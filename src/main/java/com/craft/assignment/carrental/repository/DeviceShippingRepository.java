@@ -23,9 +23,8 @@ public interface DeviceShippingRepository extends JpaRepository<DeviceShippingIn
         "VALUES ( :driverId, :status, :location)",
         nativeQuery = true)
     void saveDeviceShippingDetails(@Param("driverId") Long driverId,
-                           @Param("status") String status,
-                           @Param("location") String location);
-
+                                   @Param("status") String status,
+                                   @Param("location") String location);
 
 
 }

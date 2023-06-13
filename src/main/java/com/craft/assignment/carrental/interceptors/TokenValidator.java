@@ -22,7 +22,9 @@ public class TokenValidator {
         String token = extractToken(request);
         String sessionId = request.getHeader("Session-Id");
         String key = secretKey + sessionId;
+
         this.jwtSecretKey = Keys.hmacShaKeyFor(key.getBytes());
+
         if (token != null && sessionId != null) {
             try {
                 Jws<Claims> claimsJws = Jwts.parserBuilder()
